@@ -4,7 +4,6 @@
 
 typedef struct byteBuffer{
     unsigned char buffer;
-    int count; // to hold the number of bits in the buffer
 } ByteBuffer;
 
 int main(int argc, char *argv[]){
@@ -28,7 +27,7 @@ int main(int argc, char *argv[]){
 
     // read the input file byte by byte (char by char) until the end
     char ch;
-    int arr[8];
+    int arr[8], count = 0;
     ByteBuffer bb[7]; // 7 bytes for each file
     ch = fgetc(inFile);
     while (ch != EOF){
@@ -47,6 +46,8 @@ int main(int argc, char *argv[]){
         bb[6].buffer = (bb[6].buffer << 1) | arr[3];
 
         // manage the parity bits
+        // I could make this part into fewer lines, 
+        // but it would make it more unreadable than it already is
         if (((arr[0] + arr[1] + arr[3]) % 2) == 0) // even parity
         bb[0].buffer = (bb[0].buffer << 1) | 0;
         else bb[0].buffer = (bb[0].buffer << 1) | 1; // odd parity
@@ -57,12 +58,18 @@ int main(int argc, char *argv[]){
         bb[3].buffer = (bb[3].buffer << 1) | 0;
         else bb[3].buffer = (bb[3].buffer << 1) | 1; // odd parity
 
+        // update the count
+        count++;
+
+        /*----------------------------------------------------------*/
+
+        //do it again for the second nibble
         bb[2].buffer = (bb[2].buffer << 1) | arr[4];
         bb[4].buffer = (bb[4].buffer << 1) | arr[5];
         bb[5].buffer = (bb[5].buffer << 1) | arr[6];
         bb[6].buffer = (bb[6].buffer << 1) | arr[7];
 
-        // manage the parity bits
+        // manage the parity bits again
         if (((arr[4] + arr[5] + arr[7]) % 2) == 0) // even parity
         bb[0].buffer = (bb[0].buffer << 1) | 0;
         else bb[0].buffer = (bb[0].buffer << 1) | 1; // odd parity
@@ -73,8 +80,38 @@ int main(int argc, char *argv[]){
         bb[3].buffer = (bb[3].buffer << 1) | 0;
         else bb[3].buffer = (bb[3].buffer << 1) | 1; // odd parity
 
+        // update the count again
+        count++;
+
+        // if the bytebuffer contains 8 bits write it to its relevant file
+        if (count % 8 == 0){
+            // at this point all 7 ByteBuffers should contain 8 bits = 1 byte
+            for (int i = 0; i < 8; i++){
+                fwrite(&(bb[i].buffer), 1, 1, outFile[i]);
+
+                // clear the buffer
+                bb[i].buffer = 0;
+            }
+            
+            // reset the bit counter to 0
+            count = 0;
+        }
+
         ch = fgetc(inFile);
     }
+
+    // fill any remaining bits with 0's
+    if (count > 0){
+        while(count != 8){
+            for (int i = 0; i < 8; i++) bb[i].buffer = (bb[i].buffer << 1) | 0;
+            count++;
+        }
+        for (int i = 0; i < 8; i++) fwrite(&(bb[i].buffer), 1, 1, outFile[i]);
+    }
+
+    //close all of the files
+    fclose(inFile);
+    for (int i = 0; i < 8; i++) fclose(outFile[i]);
     
     return 0;
 }
