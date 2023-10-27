@@ -27,10 +27,12 @@ int main(int argc, char *argv[]){
 
     // read the input file byte by byte (char by char) until the end
     char ch;
-    int arr[8], count = 0;
+    int arr[8], count = 0, bytes = 0;
     ByteBuffer bb[7]; // 7 bytes for each file
     ch = fgetc(inFile);
     while (ch != EOF){
+        // update the number of bytes in the file
+        bytes++;
         // create an array of bits based on the char
         for (int i = 0, j = 7; 0 <= j; i++, j--){
             arr[i] = (ch >> j) & 0x01;
@@ -95,6 +97,7 @@ int main(int argc, char *argv[]){
             
             // reset the bit counter to 0
             count = 0;
+            // update the bytes counter
         }
 
         ch = fgetc(inFile);
@@ -113,5 +116,8 @@ int main(int argc, char *argv[]){
     fclose(inFile);
     for (int i = 0; i < 7; i++) fclose(outFile[i]);
     
+    // print the filename and number of bytes
+    printf("%s: %d B\n", argv[2], bytes);
+
     return 0;
 }
