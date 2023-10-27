@@ -34,7 +34,7 @@ int main(int argc, char *argv[]){
         // create an array of bits based on the char
         for (int i = 0, j = 7; 0 <= j; i++, j--){
             arr[i] = (ch >> j) & 0x01;
-            printf("%d", arr[i]);
+            //printf("%d", arr[i]);
         }
 
         // I tried to make this part into a loop
@@ -86,7 +86,7 @@ int main(int argc, char *argv[]){
         // if the bytebuffer contains 8 bits write it to its relevant file
         if (count % 8 == 0){
             // at this point all 7 ByteBuffers should contain 8 bits = 1 byte
-            for (int i = 0; i < 8; i++){
+            for (int i = 0; i < 7; i++){
                 fwrite(&(bb[i].buffer), 1, 1, outFile[i]);
 
                 // clear the buffer
@@ -103,15 +103,15 @@ int main(int argc, char *argv[]){
     // fill any remaining bits with 0's
     if (count > 0){
         while(count != 8){
-            for (int i = 0; i < 8; i++) bb[i].buffer = (bb[i].buffer << 1) | 0;
+            for (int i = 0; i < 7; i++) bb[i].buffer = (bb[i].buffer << 1) | 0;
             count++;
         }
-        for (int i = 0; i < 8; i++) fwrite(&(bb[i].buffer), 1, 1, outFile[i]);
+        for (int i = 0; i < 7; i++) fwrite(&(bb[i].buffer), 1, 1, outFile[i]);
     }
 
     //close all of the files
     fclose(inFile);
-    for (int i = 0; i < 8; i++) fclose(outFile[i]);
+    for (int i = 0; i < 7; i++) fclose(outFile[i]);
     
     return 0;
 }
