@@ -1,0 +1,17 @@
+1) Joshua Jones
+
+2) For project 2 we were tasked with creating a Hamming Code(7, 4) implementation using files instead of a storage device. My first program, 
+raid, takes a text file as input and reads it on one byte at a time. The program then takes the first four bits, called a nibble, from the 
+byte and uses those bits to create 3 paring bits that can be used to check for any corrupted bits. With the 7 bits in hand I put them into a 
+byte buffer. I then do that for the second nibble and then read in the next byte. Once I have read in and processed 4 bytes, the 7 byte 
+buffers are then full and can be written to 7 files respectively. This process runs until the initial text file has been read in entirely. We 
+were not tasked with dealing with files that are not divisible by four, but I would imagine that we could just fill in any remaing bits with 
+0's.
+
+For the second program, diar, we were tasked with reverse engineering this procces by reading in the 7 partition files and rebuilding the 
+original text file. Along the way we also had to check for errors and correct any bits that were flipped. This case will only work if only a 
+single bit is incorrect.
+
+3) For the make file description, i left comments on the make file itself.
+
+4) I did not use getopt.h for this case because I didnt think we were required to. I also did not handle any argument error cases in my programs. But as long as the user supplies the correct arguments the program should work flawlessly.

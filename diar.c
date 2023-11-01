@@ -8,9 +8,9 @@ void errorcheck(unsigned char uchar[]){
         arr[i] = (uchar[i] >> j) & 0x01;
         if (i == 6){
             // the array is full now check the bits and flip any that are not correct
-            if (arr[0]^arr[2]^arr[4]^arr[6]) (error += 1); // P1 ^ D1 ^ D2 ^ D4
-            if (arr[1]^arr[2]^arr[5]^arr[6]) (error += 2); // P2 ^ D1 ^ D3 ^ D4
-            if (arr[3]^arr[4]^arr[5]^arr[6]) (error += 4); // P4 ^ D2 ^ D3 ^ D4
+            if (arr[0]^arr[2]^arr[4]^arr[6]) error += 1; // P1 ^ D1 ^ D2 ^ D4
+            if (arr[1]^arr[2]^arr[5]^arr[6]) error += 2; // P2 ^ D1 ^ D3 ^ D4
+            if (arr[3]^arr[4]^arr[5]^arr[6]) error += 4; // P4 ^ D2 ^ D3 ^ D4
             if (error > 0){
                 uchar[error-1] = uchar[error-1] ^ (0x01 << j);
                 error = 0; // i spent two hours debugging before i realized that i forgot to do this😭
